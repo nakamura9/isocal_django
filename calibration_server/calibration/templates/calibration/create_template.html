@@ -1,0 +1,22 @@
+{% extends 'window.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-12 primary text-white" style='padding:1rem;'>
+                <h3>{{title}}</h3>
+            </div>
+        </div>
+        <hr class="my-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-body">
+                        {% crispy form %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}

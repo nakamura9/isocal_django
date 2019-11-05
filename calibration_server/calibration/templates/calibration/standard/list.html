@@ -1,0 +1,35 @@
+{% extends 'list_template.html' %}
+
+{% block list_headings %}
+    <tr>
+        <th>Name</th>
+        <th>Serial</th>
+        <th>Actions</th>
+
+    </tr>
+
+
+{% endblock list_headings %}
+
+{% block list_content %}
+    {% for std in object_list %}
+        <tr>
+            <td>{{std.name}}</td>
+            <td>{{std.serial}}</td>
+            <td>
+                <div class="dropdown">
+                    <button class="btn primary text-white dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false">
+                                Actions
+                            </button>
+                    <div class="dropdown-menu" aria-labelledby="triggerId">
+                        <a class="dropdown-item" href="#">View</a>
+                        <a class="dropdown-item" href="#">Edit</a>
+                        <a class="dropdown-item" href="#">Delete</a>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    {% endfor %}
+
+{% endblock list_content %}

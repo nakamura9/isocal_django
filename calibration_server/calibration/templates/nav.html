@@ -1,0 +1,27 @@
+{% load static %}
+<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+      <a class="navbar-brand" href="#"><img src="{% static '/static/calibration/images/iso.png' %}" width='50' height='15' alt=""></a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link active" href="#">Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'calibration:calibration-list' %}">Calibrations</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'calibration:customer-list' %}">Customers</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'calibration:standard-list' %}">Standards</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Uploads</a>
+          </li>
+        </ul>
+        <span style='float:right;display:inline-block;color:white;'><i class="fas fa-user"></i> Hi, {{request.user}}</span>
+      </div>
+    </nav>

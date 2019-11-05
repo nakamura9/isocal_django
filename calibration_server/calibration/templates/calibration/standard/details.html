@@ -1,0 +1,41 @@
+{% extends 'window.html' %}
+{% block content %}
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-12 primary text-white" style='padding:1rem;margin-bottom:2rem;'>
+            <h3>Standard Details</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4">
+            <div class="card shadow">
+                <div class="card-body">
+                    <p class="card-text"><strong>Name:</strong> {{object.name}}</p>
+                    <p class="card-text"><strong>Serial #:</strong> {{object.serial}}</p>
+                    <p class="card-text"><strong>Certificate:</strong> {{object.certificate}}</p>
+                    <p class="card-text"><strong>Traceability:</strong></p>
+                    <p class="card-text">{{object.traceability}}</p>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-8">
+            
+            <h3>Standard Elements*</h3>
+            <table class="table">
+                <thead>
+                    <tr class='primary text-white'>
+                        <th>Nominal</th>
+                        <th>Actual</th>
+                        <th>Uncertainty</th>
+                    </tr>
+                </thead>
+            </table>
+            <p>* <sub>Only applies to mass pieces as standards</sub></p>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,33 @@
+.dash-card h3 {
+    font-weight: 200;
+    text-align:center;
+}
+
+.dash-card h1{
+    text-align:center;
+}
+
+.dash-card {
+    border-radius: 10px;
+    border-top: 5px solid #007bff;
+}
+
+.shadow {
+    box-shadow: 5px 5px 20px;
+}
+
+.primary {
+    background-color: #23374D;
+}
+
+.secondary { 
+    background-color: #1089FF;
+}
+
+.tertiary {
+    background-color: #E5E5E5;
+}
+
+.quarternary {
+    background-color: #EEE;
+}

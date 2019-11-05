@@ -1,0 +1,40 @@
+{% extends 'list_template.html' %}
+
+{% block list_headings %}
+    <tr>
+        <th>Date</th>
+        <th>Customer</th>
+        <th>Instrument</th>
+        <th>Type</th>
+        <th>Status</th>
+        <th>Actions</th>
+    </tr>
+
+
+{% endblock list_headings %}
+
+{% block list_content %}
+    {% for cal in object_list %}
+        <tr>
+            <td>{{cal.date}}</td>
+            <td>{{cal.customer}}</td>
+            <td>{{cal.name_of_instrument}}</td>
+            <td>{{cal.type}}</td>
+            <td>{{cal.status}}</td>
+            <td>
+                <div class="dropdown">
+                    <button class="btn primary text-white dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false">
+                                Actions
+                            </button>
+                    <div class="dropdown-menu" aria-labelledby="triggerId">
+                        <a class="dropdown-item" href="#">View</a>
+                        <a class="dropdown-item" href="#">Generate Certificate</a>
+                        <a class="dropdown-item" href="#">Export PDF</a>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    {% endfor %}
+
+{% endblock list_content %}
