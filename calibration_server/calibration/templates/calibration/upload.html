@@ -1,0 +1,40 @@
+{% extends 'window.html' %}
+
+{% block content %}
+<style>
+#illustration {
+    font-size: 4rem;
+    text-align:center;
+    margin: 0px auto;
+}
+
+#upload-card {
+    text-align:center;
+}
+
+</style>
+<div class="container">
+    <div class="row">
+        <div class="col-4"></div>
+        <div class="col-4">
+            <div class="card shadow" id='upload-card'>
+                <div class="card-body">
+                    <div id="illustration">
+                        <i class="fas fa-upload"></i>
+                    </div>
+                    <h3>Upload</h3>
+                    <hr class="my-2">
+                    <p class="card-text">
+                        Go to the mobile app and select the upload option. Enter the following IP address to communicate with this server:
+                    </p>
+                    <h4>{{ip}}</h4>
+
+                </div>
+            </div>
+        
+        </div>
+        <div class="col-4"></div>
+    </div>
+</div>
+
+{% endblock content %}

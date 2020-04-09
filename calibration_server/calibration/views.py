@@ -10,6 +10,8 @@ from django.urls import reverse_lazy as reverse
 from django_filters.views import FilterView
 import os 
 from calibration import forms, models, filters
+import socket 
+
 
 class ContextMixin(object):
     context = {
@@ -99,4 +101,11 @@ class CalibrationListView(ContextMixin, FilterView):
     filterset_class = filters.CalibrationFilter
     context = {
         'title': 'Calibrations List',
+    }
+
+
+class UploadView(ContextMixin, TemplateView):
+    template_name = os.path.join('calibration', 'upload.html')
+    context = {
+        'ip': socket.gethostbyname(socket.gethostname())
     }

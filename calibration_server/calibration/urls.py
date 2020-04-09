@@ -23,4 +23,6 @@ urlpatterns = [
         name='standard-details'),
     path('calibration-list/', views.CalibrationListView.as_view(), 
         name='calibration-list'),
+    path('upload/', views.UploadView.as_view(), 
+        name='upload'),
 ]
