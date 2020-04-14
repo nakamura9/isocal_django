@@ -19,15 +19,15 @@
 	<table>
 		<tr>
 			<td>Settling time found to be</td>
-			<td>{{settling_average}}</td>
+			<td>{{object.settling_average|floatformat:2}}</td>
 		</tr>
 		<tr>
 			<td>Weight used for corner load test</td>
-			<td>{{corner}}</td>
+			<td>{{object.corner_weight}}</td>
 		</tr>
 		<tr>
 			<td>Max corner loading error</td>
-			<td>{{corner_error}}</td>
+			<td>{{object.max_corner_error}}</td>
 		</tr>
 		<tr>
 			<td>Cold start drift found to be</td>
@@ -54,41 +54,41 @@
 	<table>
 		<tr>
 			<td>Customer</td>
-			<td>{{customer}}</td>
+			<td>{{objec.customer}}</td>
 		</tr>
 		<tr>
 			<td>Location</td>
-			<td>{{location}}</td>
+			<td>{{object.location}}</td>
 			<td>Certificate Number</td>
 			<td>{{certificate_number}}</td>
 		</tr>
 		<tr>
 			<td>Manufacturer</td>
-			<td>{{manufacturer}}</td>
+			<td>{{object.manufacturer}}</td>
 			<td>Date</td>
-			<td>{{date}}</td>
+			<td>{{object.date}}</td>
 		</tr>
 		<tr>
 			<td>Model</td>
-			<td>{{model}}</td>
+			<td>{{object.model}}</td>
 			<td>Calibrated by</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>Serial Number</td>
-			<td>{{serial}}</td>
+			<td>{{object.serial}}</td>
 			<td>Valindation</td>
 			<td>YES</td>
 		</tr>
 		<tr>
 			<td>Range</td>
-			<td>{{range}}</td>
+			<td>{{object.range_lower}} - {{object.range_upper}}</td>
 			<td>Clean</td>
 			<td>YES</td>
 		</tr>
 		<tr>
 			<td>Resolution</td>
-			<td>{{resolution}}</td>
+			<td>{{object.resolution}}</td>
 			<td>Level</td>
 			<td>YES</td>
 		</tr>
@@ -108,7 +108,25 @@
 	<br />
 	<p>1) Standards Used</p>
 	
-	{{standards_table}}
+	<p><b>{{object.standard_obj.name}}</b></p>
+	 <table class="table">
+                <thead>
+                    <tr class='primary text-white'>
+                        <th>Nominal</th>
+                        <th>Actual</th>
+                        <th>Uncertainty</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for line in object.standard_obj.standardline_set.all %}
+                        <tr>
+                            <td>{{line.nominal}}</td>
+                            <td>{{line.actual}}</td>
+                            <td>{{line.uncertainty}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
 	
 	<br />
 	<p>2) Cold Start: </p>

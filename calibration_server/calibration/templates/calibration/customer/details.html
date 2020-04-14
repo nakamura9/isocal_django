@@ -16,7 +16,8 @@
                     <p class="card-text"><strong>Email:</strong> {{object.email}}</p>
                     <p class="card-text"><strong>Phone:</strong> {{object.phone}}</p>
                     <p class="card-text"><strong>Address:</strong></p>
-                    <p class="card-text">{{object.address}}</p>
+                    <p class="card-text">{{object.address| linebreaks}}</p>
+                    <a href="{% url 'calibration:update-customer' pk=object.pk %}" class="btn btn-success"><i class="fas fa-edit    "></i> Edit</a>
                 </div>
             </div>
 
@@ -27,7 +28,7 @@
                     <div class="card dash-card">
                         <div class="card-body">
                             <h3>Oustanding</h3>
-                            <h1>1</h1>
+                            <h1>{{object.outstanding}}</h1>
                         </div>
                     </div>
                 </div>
@@ -35,7 +36,7 @@
                     <div class="card dash-card">
                         <div class="card-body">
                             <h3>Completed</h3>
-                            <h1>2</h1>
+                            <h1>{{object.completed}}</h1>
                         </div>
                     </div>
                 </div>
@@ -43,13 +44,13 @@
                     <div class="card dash-card">
                         <div class="card-body">
                             <h3>Latest</h3>
-                            <h1>21 Oct '19</h1>
+                            <h1>{{object.latest}}</h1>
                         </div>
                     </div>
                 </div>
             </div>
-            <h3>Outstanding Calibrations</h3>
-            <h3>Completed Calibrations</h3>
+            <h3>Calibrations</h3>
+
         </div>
     </div>
 </div>

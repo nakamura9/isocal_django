@@ -1,3 +1,5 @@
+{% load static %}
+
 <!Doctype html>
 <html>
 	<head>
@@ -27,10 +29,10 @@
         
     <div>
         <div style="float: left;">
-            <img width="187" height="100" src="sad.jpg">
+            <img width="187" height="100" src="{% static 'calibration/images/sad.jpg' %}">
         </div>
 		<div style="float: left;">
-            <center><img  width="295" height="125" src="iso.png">
+            <center><img  src="{% static 'calibration/images/iso.png' %}">
             <p>E-mail: Consolte@mweb.co.zw, 17038 Boshoff Road, Graniteside, Harare, Zimbabwe</p>
             <p><b>A SADCAS Accredited Calibration Laboratory</b></p></center>
         </div>
@@ -41,25 +43,25 @@
         <h2 style="color: red;
 					text-align: center;"> CALIBRATION CERTIFICATE</h2>
 
-<pre><b>Date of Calibration:  {{date}}
+<pre><b>Date of Calibration:  {{object.date}}
 
-Date of Next Calibration: {{due}}
+Date of Next Calibration: {{object.due}}
 		
-Calibrated for     :  {{customer}}
+Calibrated for     :  {{object.customer}}
 		
-Calibration of     :  {{type}}
+Calibration of     :  {{object.type_string}}
 
-Manufacturer       :  {{manufacturer}}
+Manufacturer       :  {{object.manufacturer}}
 
-Serial Number      :  {{serial}}
+Serial Number      :  {{object.serial}}
 
-Range              :  {{range}}
+Range              :  {{object.range_lower}} - {{object.range_upper}}
 			
-Resolution         :  {{resolution}}
+Resolution         :  {{object.resolution}}
 			
-Calibrated at      :  {{location}}
+Calibrated at      :  {{object.location}}
 
-Immersion depth    :  {{immersion}}%
+Immersion depth    :  {{object.immersion_depth}} %
 
 
 </b></pre>
@@ -103,15 +105,15 @@ Immersion depth    :  {{immersion}}%
 	<h3><b>1    Standards used:</b></h3>
 		{% block standards %}
 		{% endblock %}
-	<h3>2	Procedure used: {{procedure}} </h3>
+	<h3>2	Procedure used: {{object.procedure}} </h3>
 		
 	<h3>3	Calibration Conditions:</h3>
 	
-	<p>Temperature: {{temperature}} ± 1ºC</p>
-	<p>Humidity   :  {{humidity}} ± 10% RH</p>
+	<p>Temperature: {{object.temperature}} ± 1ºC</p>
+	<p>Humidity   :  {{object.humidity}} ± 10% RH</p>
 	
 	
-	<h3>4	Units used : {{units}}</h3>
+	<h3>4	Units used : {{object.units}}</h3>
 	
 	<h3>5	Results:</h3>
 	{% block results %}
@@ -132,7 +134,7 @@ Immersion depth    :  {{immersion}}%
 	multiplied by a coverage factor of k=2, which unless specifically stated otherwise
 	provides a level of confidence of approximately 95%</p>
     
-    <p>{{comments}}</p>
+    <p>{{object.comments}}</p>
     </div>
 	</body>
 </html>

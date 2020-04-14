@@ -32,6 +32,15 @@
                         <th>Uncertainty</th>
                     </tr>
                 </thead>
+                <tbody>
+                    {% for line in object.standardline_set.all %}
+                        <tr>
+                            <td>{{line.nominal}}</td>
+                            <td>{{line.actual}}</td>
+                            <td>{{line.uncertainty}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
             </table>
             <p>* <sub>Only applies to mass pieces as standards</sub></p>
         </div>

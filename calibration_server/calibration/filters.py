@@ -12,6 +12,26 @@ class CalibrationFilter(django_filters.FilterSet):
         model = models.GenericCalibration
 
 
+class BalanceCalibrationFilter(django_filters.FilterSet):
+    class Meta:
+        fields = {
+            'date': ['exact', 'gt', 'lt'],
+            'customer': ['exact']
+        }
+        model = models.Balance
+
+
+
+class AutoclaveCalibrationFilter(django_filters.FilterSet):
+    class Meta:
+        fields = {
+            'date': ['exact', 'gt', 'lt'],
+            'customer': ['exact']
+        }
+        model = models.Autoclave
+
+
+
 class CustomerFilter(django_filters.FilterSet):
     class Meta:
         fields = {

@@ -25,9 +25,8 @@
                                 Actions
                             </button>
                     <div class="dropdown-menu" aria-labelledby="triggerId">
-                        <a class="dropdown-item" href="#">View</a>
-                        <a class="dropdown-item" href="#">Edit</a>
-                        <a class="dropdown-item" href="#">Delete</a>
+                        <a class="dropdown-item" href="{% url 'calibration:customer-details' pk=cus.pk %}">View</a>
+                        <a class="dropdown-item" href="{% url 'calibration:update-customer' pk=cus.pk %}">Edit</a>
                     </div>
                 </div>
             </td>
