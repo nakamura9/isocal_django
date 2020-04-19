@@ -2,139 +2,192 @@
 
 <!Doctype html>
 <html>
-	<head>
 
-		<style>
-			table, tr, td{
-				border: 1px solid black;
-				border-collapse: collapse;
-				padding: 2px;
-				min-width: 5cm;
-				min-height: 0.5cm;
-				}
-			.no_b{
-				border: none;
-				font-style: italic;
-				padding: 3px;
-			}
-			pre, p{
-				font-size: 12pt;
-			}
-		</style>
-	</head>
-	<body>
-		<center><p>{{certificate_number}}</p></center>
-        
-        
-        
-    <div>
-        <div style="float: left;">
-            <img width="187" height="100" src="{% static 'calibration/images/sad.jpg' %}">
-        </div>
-		<div style="float: left;">
-            <center><img  src="{% static 'calibration/images/iso.png' %}">
-            <p>E-mail: Consolte@mweb.co.zw, 17038 Boshoff Road, Graniteside, Harare, Zimbabwe</p>
-            <p><b>A SADCAS Accredited Calibration Laboratory</b></p></center>
-        </div>
-	</div>
-    <div style="float: left;
-                clear: both;">
-    
-        <h2 style="color: red;
+<head>
+
+	<style>
+		table,
+		tr,
+		td, 
+		th {
+			border: 1px solid black;
+			border-collapse: collapse;
+			padding: 2px;
+			min-width: 5cm;
+			min-height: 0.5cm;
+		}
+
+		.no_b {
+			border: none;
+			font-style: italic;
+			padding: 3px;
+		}
+
+		pre,
+		p {
+			font-size: 12pt;
+		}
+	</style>
+	<link rel="stylesheet" href="{% static 'calibration/css/isocal.css' %}">
+</head>
+
+<body>
+	<div class="page">
+		<center>
+			<p>{{certificate_number}}</p>
+		</center>
+		<div>
+			<div style="float: left;">
+				<img width="187" height="100" src="{% static 'calibration/images/sad.jpg' %}">
+			</div>
+			<div style="float: left;">
+				<center><img src="{% static 'calibration/images/iso.png' %}">
+					<p>E-mail: Consolte@mweb.co.zw, 17038 Boshoff Road, Graniteside, Harare, Zimbabwe</p>
+					<p><b>A SADCAS Accredited Calibration Laboratory</b></p>
+				</center>
+			</div>
+		</div>
+		<div style="float: left;clear: both;">
+
+			<h2 style="color: red;
 					text-align: center;"> CALIBRATION CERTIFICATE</h2>
 
-<pre><b>Date of Calibration:  {{object.date}}
+			<b>
+			<table class='header-table'>
+				<tbody>
+					<tr>
+						<td>
+							Date of Calibration
+							<span style='float:right;'>:</span>
+						</td>
+						<td>{{object.date}}</td>
+						</tr><tr>
+						<td>
+							Date of Next Calibration
+							<span style='float:right;'>:</span>
+						</td>
+						<td>{{object.due}}</td>
+						</tr><tr>
 
-Date of Next Calibration: {{object.due}}
-		
-Calibrated for     :  {{object.customer}}
-		
-Calibration of     :  {{object.type_string}}
+						<td>
+							Calibrated For
+							<span style='float:right;'>:</span>
+						</td>
+						<td>{{object.customer}}</td>
+						</tr><tr>
 
-Manufacturer       :  {{object.manufacturer}}
+						<td>
+							Calibration of
+							<span style='float:right;'>:</span>
+						</td>
+						<td>{{object.type_string}}</td>
+						</tr><tr>
 
-Serial Number      :  {{object.serial}}
+						<td>
+							Manufacturer
+							<span style='float:right;'>:</span>
+						</td>
+						<td>{{object.manufacturer}}</td>
+						</tr><tr>
 
-Range              :  {{object.range_lower}} - {{object.range_upper}}
+						<td>
+							Serial Number
+							<span style='float:right;'>:</span>
+						</td>
+						<td>{{object.serial}}</td>
+						</tr><tr>
+
+						<td>
+							Range
+							<span style='float:right;'>:</span>
+						</td>
+						<td>{{object.range_lower}} - {{object.range_upper}}</td>
+						</tr><tr>
+
+						<td>
+							Resolution
+							<span style='float:right;'>:</span>
+						</td>
+						<td>{{object.resolution}}</td>
+						</tr><tr>
+
+						<td>
+							Calibrated At
+							<span style='float:right;'>:</span>
+						</td>
+						<td>{{object.location}}</td>
+						</tr><tr>
+
+						<td>
+							Immersion Depth
+							<span style='float:right;'>:</span>
+						</td>
+						<td>{{object.immersion_depth}}</td>
+					</tr>
+				</tbody>
+			</table>
 			
-Resolution         :  {{object.resolution}}
+			<div class='signature-box'>
+				<div class='row'>
+					<div class='cell'>Calibrated by</div>
+					<div class='cell'>{{by}}</div>
+					<div class='cell'>Sign</div>
+				</div>
+				<div class='row'>
+					<div class='cell'></div>
+					<div class='cell'></div>
+					<div class='cell'></div>
+				</div>
+				<div class='row'>
+					<div class='cell'>Approved By</div>
+					<div class='cell'>Lab Manager</div>
+					<div class='cell'>Sign</div>
+				</div>
+				<div class='row'>
+					<div class='cell'></div>
+					<div class='cell'></div>
+					<div class='cell'></div>
+				</div>
+			</div>
+
+			<div class="page-end"></div>
 			
-Calibrated at      :  {{object.location}}
+			
+			<h3><b>1 Standards used:</b></h3>
+			{% block standards %}
+			{% endblock %}
+			<h3>2 Procedure used: {{object.procedure}} </h3>
 
-Immersion depth    :  {{object.immersion_depth}} %
+			<h3>3 Calibration Conditions:</h3>
+
+			<p>Temperature: {{object.temperature}} ± 1ºC</p>
+			<p>Humidity : {{object.humidity}} ± 10% RH</p>
 
 
-</b></pre>
-		
-		
-		<br />
-		<center><table>
-			<tr><td>Calibrated by</td>
-				<td>{{by}}</td>
-				<td>Sign</td>
-			</tr>
-			<tr><td></td>
-				<td></td>
-				<td></td>
-			</tr>
-			<tr><td>Approved by</td>
-				<td>Lab Manager</td>
-				<td>Sign</td>
-			</tr>
-			<tr><td></td>
-				<td></td>
-				<td></td>
-			</tr>
-		</table></center>
-		<pre>
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		</pre>
-	<h3><b>1    Standards used:</b></h3>
-		{% block standards %}
-		{% endblock %}
-	<h3>2	Procedure used: {{object.procedure}} </h3>
-		
-	<h3>3	Calibration Conditions:</h3>
-	
-	<p>Temperature: {{object.temperature}} ± 1ºC</p>
-	<p>Humidity   :  {{object.humidity}} ± 10% RH</p>
-	
-	
-	<h3>4	Units used : {{object.units}}</h3>
-	
-	<h3>5	Results:</h3>
-	{% block results %}
-	{% endblock %}
-	
-	<h3>6	Traceability:</h3>
-	{% block traceability %}
-	{% endblock %}
-	
-	<h3>7	Remarks:</h3>
-	
-	<p>The reported uncertainties of measurement were calculated and expressed 
-	in accordance with the BIPM, ISO, IEC, IUPAP, OIML document entitled: "A guide
-	to the expression of Uncertainty in Measurement"(International Organization for
-	Standardization, Geneva Switzerland, 1993)</p>
-	
-	<p>The reported uncertainties of measurement are based on standard uncertainty 
-	multiplied by a coverage factor of k=2, which unless specifically stated otherwise
-	provides a level of confidence of approximately 95%</p>
-    
-    <p>{{object.comments}}</p>
-    </div>
-	</body>
+			<h3>4 Units used : {{object.units}}</h3>
+
+			<h3>5 Results:</h3>
+			{% block results %}
+			{% endblock %}
+
+			<h3>6 Traceability:</h3>
+			{% block traceability %}
+			{% endblock %}
+
+			<h3>7 Remarks:</h3>
+
+			<p>The reported uncertainties of measurement were calculated and expressed
+				in accordance with the BIPM, ISO, IEC, IUPAP, OIML document entitled: "A guide
+				to the expression of Uncertainty in Measurement"(International Organization for
+				Standardization, Geneva Switzerland, 1993)</p>
+
+			<p>The reported uncertainties of measurement are based on standard uncertainty
+				multiplied by a coverage factor of k=2, which unless specifically stated otherwise
+				provides a level of confidence of approximately 95%</p>
+
+			<p>{{object.comments}}</p>
+		</div>
+	</div>
+</body>
+
 </html>

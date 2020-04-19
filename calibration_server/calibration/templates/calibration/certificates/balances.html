@@ -31,36 +31,55 @@
 		</tr>
 		<tr>
 			<td>Cold start drift found to be</td>
-			<td>{{drift}}</td>
+			<td>{{object.cold_drift}}</td>
 		</tr>
 		<tr>
 			<td>Repeatability at 1/2 load found</td>
-			<td>{{half_repeat}}</td>
+			<td>{{object.half_repeat}}</td>
 		</tr>
 		<tr>
-			<td>Repeatability at 1/1 load found</td>
-			<td>{{full_repeat}}</td>
+			<td>Repeatability at full load found</td>
+			<td>{{object.full_repeat}}</td>
 		</tr>
 	</table> 
 	
 	<br />
 	
-	{{nominal_table}}
+	<table>
+		<thead>
+			<tr>
+				<th>Nominal Mass</th>
+				<th>Actual Mass</th>
+				<th>Linearity Up</th>
+				<th>Difference</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for mea in object.balancelinearity_set.all %}
+				<tr>
+					<td>{{mea.nominal}}</td>
+					<td>{{mea.actual}}</td>
+					<td>{{mea.measurement}}</td>
+					<td>{{mea.difference}}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
 	
 	
-	<p><b>The uncertainty of the balance was estimated to be {{uncertainty}} {{units}}(95% confidence level)</b></p>
+	<p><b>The uncertainty of the balance was estimated to be {{object.uncertainty}} {{object.units}}(95% confidence level)</b></p>
 	
 	
 	<table>
 		<tr>
 			<td>Customer</td>
-			<td>{{objec.customer}}</td>
+			<td>{{object.customer}}</td>
 		</tr>
 		<tr>
 			<td>Location</td>
 			<td>{{object.location}}</td>
 			<td>Certificate Number</td>
-			<td>{{certificate_number}}</td>
+			<td>{{object.certificate_number}}</td>
 		</tr>
 		<tr>
 			<td>Manufacturer</td>
@@ -94,7 +113,7 @@
 		</tr>
 		<tr>
 			<td>Units</td>
-			<td>grams</td>
+			<td>{{object.units}}</td>
 			<td>Warmed Up</td>
 			<td>YES</td>
 		</tr>
@@ -111,14 +130,14 @@
 	<p><b>{{object.standard_obj.name}}</b></p>
 	 <table class="table">
                 <thead>
-                    <tr class='primary text-white'>
+                    <tr>
                         <th>Nominal</th>
                         <th>Actual</th>
                         <th>Uncertainty</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for line in object.standard_obj.standardline_set.all %}
+                    {% for line in object.standard.standardline_set.all %}
                         <tr>
                             <td>{{line.nominal}}</td>
                             <td>{{line.actual}}</td>
@@ -131,35 +150,199 @@
 	<br />
 	<p>2) Cold Start: </p>
 	
-	{{cold_start_table}}
+	<table>
+		<thead>
+			<tr>
+				<th>Test Weight(g)</th>
+				<th>{{object.cold_nominal}}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<th>Test #</th>
+				<th>Result</th>
+			</tr>
+			{% for mea in object.balancecoldstart_set.all %}
+				<tr>
+					<td>{{forloop.counter}}</td>
+					<td>{{mea.measurement}}</td>
+				</tr>
+			{% endfor %}
+			<tr>
+				<th>Cold Drift</th>
+				<th>{{object.cold_drift}}</th>
+			</tr>
+		</tbody>
+	</table>
 	
 	<br />
 	<p>3) Settling Time: </p>
 	
-	{{settling_table}}
+	<table>
+		<thead>
+			<tr>
+				<th>Reading</th>
+				<th>Settling Time</th>
+			</tr>
+			{% for mea in object.balancesettlingtime_set.all %}
+				<tr>
+					<td>{{forloop.counter}}</td>
+					<td>{{mea.measurement}}</td>
+				</tr>
+			{% endfor %}
+		</thead>
+	</table>
 	
 	<br />
 	<p>4) Linearity(before calibration): </p>
 	
-	{{nominal_table}}
+	<table>
+		<thead>
+			<tr>
+				<th>Nominal Mass</th>
+				<th>Actual Mass</th>
+				<th>Linearity Up</th>
+				<th>Difference</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for mea in object.balancelinearity_set.all %}
+				<tr>
+					<td>{{mea.nominal}}</td>
+					<td>{{mea.actual}}</td>
+					<td>{{mea.measurement}}</td>
+					<td>{{mea.difference}}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
 	
 	<br />
 	<p>5) Linearity(after calibration adjustments):</p>
 	
-	{{linearity_table}}
+	<div style='display:flex;flex-direction:row;border:1px solid black;padding:0px;'>
+		<div style='display:flex;flex-direction:column;border:1px solid black;flex:2;margin:0px' class='col'>
+			<div>Nominal Value</div>
+			<div>Actual Value</div>
+			<div>Linearity Up</div>
+			<div>Linearity Down</div>
+			<div>Linearity Up</div>
+			<div>Average Reading</div>
+			<div>Difference</div>
+			<div>Standard Deviation</div>
+		</div>
+		{% for mea in object.up_down_linearity %}
+			<div class='col' style='display:flex;flex-direction:column;border:1px solid black;flex:1;'>
+				<div>{{mea.nom}}</div>
+				<div>{{mea.actual}}</div>
+				<div>{{mea.up}}</div>
+				<div>{{mea.down}}</div>
+				<div>{{mea.up2}}</div>
+				<div>{{mea.avg}}</div>
+				<div>{{mea.stdev}}</div>
+				<div>{{mea.diff}}</div>
+			</div>
+		{% endfor %}
+	</div>
 	
 	<br />
 	<p>6) Repeatability:</p>
 	
-	{{repeatability_table}}
+	<table>
+		<tbody>
+			<tr>
+				<th></th>
+				<th>1/2 Load</th>
+				<th>Full Load</th>
+			</tr>
+			<tr>
+				<th>Nominal Mass</th>
+				<th>{{object.balancerepeatability_set.first.nominal_half}}</th>
+				<th>{{object.balancerepeatability_set.first.nominal_full}}</th>
+			</tr>
+			<tr>
+				<th>Actual Mass</th>
+				<th>{{object.balancerepeatability_set.first.actual_half}}</th>
+				<th>{{object.balancerepeatability_set.first.actual_full}}</th>
+			</tr>
+			{% for mea in object.balancerepeatability_set.all %}
+				<tr>
+					<td>Reading #{{forloop.counter}}</td>
+					<td>{{mea.half_load}}</td>
+					<td>{{mea.full_load}}</td>
+				</tr>
+			{% endfor %}
+			<tr>
+				<th>Average Reading</th>
+				<th>{{object.repeat_half_average}}</th>
+				<th>{{object.repeat_full_average}}</th>
+			</tr>
+			<tr>
+				<th>Standard Deviation</th>
+				<th>{{object.repeat_half_stdev}}</th>
+				<th>{{object.repeat_full_stdev}}</th>
+			</tr>
+		</tbody>
+	</table>
 	
 	<br /> 
 	<p>7) Off Center Error</p>
 	
-	{{off_table}}
+	<table>
+		<tbody>
+			<tr>
+				<th colspan='2'>Test Weight</th>
+				<th>{{object.balanceoffcenter_set.first.mass_piece}}</th>
+			</tr>
+			<tr>
+				<td>Position</td>
+				<td>Reading</td>
+				<td>Weight Difference</td>
+			</tr>
+			{% for mea in object.balanceoffcenter_set.all %}
+				<tr>
+					<td>
+					{% if forloop.counter == 1 %}
+					A
+					{% elif forloop.counter == 2 %}
+					B
+					{% elif forloop.counter == 3 %}
+					C
+					{% elif forloop.counter == 4 %}
+					D
+					{% else %}
+					E
+					{% endif %}
+					</td>
+					<td>{{mea.measurement}}</td>
+					<td>{{mea.difference}}</td>
+				</tr>
+			{% endfor %}
+			<tr>
+				<td colspan='2'>Minimum Reading</td>
+				<td>{{object.off_center_min}}</td>
+			</tr>
+			<tr>
+				<td colspan='2'>Maximum Reading</td>
+				<td>{{object.off_center_max}}</td>
+			</tr>
+			<tr>
+				<td colspan='2'>Average Reading</td>
+				<td>{{object.off_center_mean}}</td>
+			</tr>
+			<tr>
+				<td colspan='2'>Minimum Corner Error</td>
+				<td>{{object.off_center_min}}</td>
+			</tr>
+			<tr>
+				<td colspan='2'>Standard Deviation of Readings</td>
+				<td>{{object.off_center_stdev}}</td>
+			</tr>
+		</tbody>
+	</table>
 	
 	<p><b>The uncertainty of the measurement was estimated to be + 
-	{{uncertainty}}{{units}}.(95% confidence level)</b>
+	{{object.uncertainty}}{{object.units}}.(95% confidence level)</b>
 	</p>
 	
 {% endblock %}

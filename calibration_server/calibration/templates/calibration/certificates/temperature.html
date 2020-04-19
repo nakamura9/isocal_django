@@ -7,8 +7,12 @@
 			<td class="no_b">Serial Number</td>
 			<td class="no_b">Certificate Number</td>
 		</tr>
-		{{standard}}
-	<table>
+		<tr>
+			<td>{{object.standard.name}}</td>
+			<td>{{object.standard.serial}}</td>
+			<td>{{object.standard.certificate}}</td>
+		</tr>
+	</table>
 	
 {% endblock %}
 {% block results %}

@@ -1,7 +1,9 @@
 from django.db import models
 from django.shortcuts import reverse
 import datetime
-from statistics import mean
+from statistics import mean, stdev
+from builtins import round
+import math
 
 class Profile(models.Model):
     user = models.OneToOneField('auth.user', on_delete=models.CASCADE)
@@ -63,6 +65,7 @@ class Calibration(models.Model):
         abstract = True
 
     certificate_timestamp = models.DateTimeField(null=True)
+    certificate_number = models.CharField(blank=True, max_length=255, default='')
     date = models.DateField()
     start_time = models.TimeField(null=True)
     end_time = models.TimeField(null=True)
@@ -120,6 +123,10 @@ class Autoclave(Calibration):
         on_delete=models.CASCADE, related_name='temperature')
     temp_unit = models.CharField(max_length=255)
 
+    @property
+    def type_string(self):
+        return 'autoclave'
+
 
 class AutoclaveTemperatureCalibrationLine(models.Model):
     calibration = models.ForeignKey('calibration.Autoclave', on_delete=models.CASCADE)
@@ -137,6 +144,10 @@ class AutoclavePressureCalibrationLine(models.Model):
 class GenericCalibration(Calibration):
     type = models.CharField(max_length=16)
 
+    @property
+    def type_string(self):
+        return self.type
+
 class GenericCalibrationLine(models.Model):
     calibration = models.ForeignKey('calibration.GenericCalibration', on_delete=models.CASCADE)
     input_signal = models.FloatField(default=0.0)
@@ -151,6 +162,26 @@ class PressureCalibrationLine(models.Model):
 
 
 class Balance(Calibration):
+    @property
+    def cold_nominal(self):
+        qs = self.balancecoldstart_set.all()
+        if qs.exists():
+            return qs.first().nominal
+
+    @property 
+    def cold_drift(self):
+        '''the total cold start readings
+        average of maximum and minimum values
+        test_weight value - ((max + min)/2) '''
+        cold_values = [i.measurement for i in self.balancecoldstart_set.all()]
+        if len(cold_values) > 0:
+            average_over_span = (min(cold_values) + max(cold_values)) / 2
+            return round(abs(float(self.balancecoldstart_set.first().nominal) - average_over_span), 4) #TODO change
+
+
+    @property
+    def type_string(self):
+        return 'balance'
 
     @property 
     def standard_obj(self):
@@ -180,11 +211,131 @@ class Balance(Calibration):
     def settling_average(self):
         return mean(i.measurement for i in self.balancesettlingtime_set.all())
 
+    @property 
+    def half_repeat(self):
+        readings = [i.half_load for i in self.balancerepeatability_set.all()]
+        if len(readings) == 0:
+            return 0
+        return stdev(readings)
+
+    @property
+    def full_repeat(self):
+        readings = [i.full_load for i in self.balancerepeatability_set.all()]
+        if len(readings) == 0:
+            return 0
+        return stdev(readings)
+
+    @property
+    def uncertainty(self):
+        """overall uncertainty of the data derived from the 
+        uncertainty of the standards, the measurements
+        drift, repeatbility """
+
+        def squareroot_of_sum_of_squares(l):
+            squares = [math.pow(i, 2) for i in l]
+            return math.sqrt(sum(squares))
+
+        std_uncertainty = squareroot_of_sum_of_squares([i.uncertainty for i in \
+                                self.standard.standardline_set.all()])
+        
+        resolution_uncertainty = (self.resolution / 2) / math.sqrt(3)
+        drift_uncertainty = self.cold_drift / math.sqrt(3)
+        repeatability_uncertainty = squareroot_of_sum_of_squares(
+            [self.half_repeat, self.full_repeat])
+        
+        return round(squareroot_of_sum_of_squares([std_uncertainty,
+                    resolution_uncertainty,
+                    drift_uncertainty,
+                    repeatability_uncertainty]) * 2, 4)
+
+    @property
+    def up_down_linearity(self):
+        readings = [mea for mea in self.balancelinearityupdown_set.all()]
+        print(readings)
+        up = readings[:5]
+        
+        down = readings[4:9]
+        up2 = readings[10:15]
+        
+        print(len(up))
+        print(len(up2))
+        print(len(down))
+
+        if len(up) != len(down) or len(up) != len(up2):
+            return None
+
+        res = []
+        for i in range(5):
+            data = {}
+            data['nom'] = up[i].nominal
+            data['actual'] = up[i].actual
+            data['up'] = up[i].measurement
+            data['down'] = down[i].measurement
+            data['up2'] = up2[i].measurement
+            reading_list =[up[i].measurement, 
+                                down[i].measurement, 
+                                up2[i].measurement]
+            data['avg'] = round(mean(reading_list), 4)
+            data['stdev'] = round(stdev(reading_list), 4)
+            data['diff'] = round(abs(up[i].actual - mean(reading_list)),4)
+            
+            res.append(data)
+
+        return res
+
+    @property
+    def repeat_half_average(self):
+        return mean([i.half_load for i in self.balancerepeatability_set.all()])
+
+    @property
+    def repeat_full_average(self):
+        return mean([i.full_load for i in self.balancerepeatability_set.all()])
+        
+
+    @property
+    def repeat_half_stdev(self):
+        if self.balancerepeatability_set.all().count() > 1:
+            return round(stdev([i.half_load for i in self.balancerepeatability_set.all()]), 4)
+        
+
+    @property
+    def repeat_full_stdev(self):
+        if self.balancerepeatability_set.all().count() > 1:
+            return round(stdev([i.full_load for i in self.balancerepeatability_set.all()]), 4)
+
+    @property 
+    def off_center_min(self):
+        return min(i.measurement for i in self.balanceoffcenter_set.all())
+
+    @property 
+    def off_center_max(self):
+        return max(i.measurement for i in self.balanceoffcenter_set.all())
+
+    @property 
+    def off_center_mean(self):
+        return mean(i.measurement for i in self.balanceoffcenter_set.all())
+
+    @property 
+    def off_center_min_error(self):
+        return min(i.difference for i in self.balanceoffcenter_set.all())
+
+    @property 
+    def off_center_stdev(self):
+        return stdev(i.measurement for i in self.balanceoffcenter_set.all())
+
 class BalanceColdStart(models.Model):
     #up to 5 measurements
     calibration = models.ForeignKey('calibration.Balance', on_delete=models.CASCADE)
     measurement = models.FloatField(default=0.0)
     nominal = models.FloatField(default=0.0)
+
+    @property
+    def actual(self):
+        return 0#TODO fix
+
+    @property
+    def difference(self):
+        return abs(self.nominal - self.measurement)
 
 
 class BalanceSettlingTime(models.Model):
@@ -198,12 +349,41 @@ class BalanceLinearityUpDown(models.Model):
     calibration = models.ForeignKey('calibration.Balance', on_delete=models.CASCADE)
     measurement = models.FloatField(default=0.0)
 
+    @property 
+    def closest(self):
+        std = self.calibration.standard
+        if not std:
+            return 
+
+        closest_id = None
+        smallest_difference = None
+        for line in std.standardline_set.all():
+            diff = abs(self.measurement - line.actual)
+            if not smallest_difference or diff < smallest_difference:
+                closest_id = line.id
+
+        return StandardLine.objects.get(pk=closest_id)
+
+    @property
+    def nominal(self):
+        if self.closest:
+            return self.closest.nominal
+
+    @property 
+    def actual(self):
+        if self.closest:
+            return self.closest.actual
+
 class BalanceLinearity(models.Model):
     #up to 5 measurements
     calibration = models.ForeignKey('calibration.Balance', on_delete=models.CASCADE)
     actual = models.FloatField(default=0.0)
     nominal = models.FloatField(default=0.0)
     measurement = models.FloatField(default=0.0)
+
+    @property
+    def difference(self):
+        return abs(self.measurement - self.actual)
 
 class BalanceTaringLinearity(models.Model):
     #up to 10 measurements
@@ -218,8 +398,63 @@ class BalanceRepeatability(models.Model):
     half_load = models.FloatField(default=0.0)
     full_load = models.FloatField(default=0.0)
 
+
+    @property 
+    def closest_half(self):
+        std = self.calibration.standard
+        if not std:
+            return 
+
+        closest_id = None
+        smallest_difference = None
+        for line in std.standardline_set.all():
+            diff = abs(self.half_load - line.actual)
+            if not smallest_difference or diff < smallest_difference:
+                closest_id = line.id
+
+        return StandardLine.objects.get(pk=closest_id)
+
+    @property 
+    def closest_full(self):
+        std = self.calibration.standard
+        if not std:
+            return 
+
+        closest_id = None
+        smallest_difference = None
+        for line in std.standardline_set.all():
+            diff = abs(self.full_load - line.actual)
+            if not smallest_difference or diff < smallest_difference:
+                closest_id = line.id
+
+        return StandardLine.objects.get(pk=closest_id)
+
+    @property
+    def nominal_half(self):
+        if self.closest_half:
+            return self.closest_half.nominal
+
+    @property
+    def nominal_full(self):
+        if self.closest_full:
+            return self.closest_full.nominal
+
+    @property 
+    def actual_half(self):
+        if self.closest_half:
+            return self.closest_half.actual
+
+    @property 
+    def actual_full(self):
+        if self.closest_full:
+            return self.closest_full.actual
+
 class BalanceOffCenter(models.Model):
     #up to 10 measurements
     calibration = models.ForeignKey('calibration.Balance', on_delete=models.CASCADE)
     measurement = models.FloatField(default=0.0)
     mass_piece = models.FloatField(default=0.0)
+
+    @property 
+    def difference(self):
+        return abs(self.mass_piece - self. measurement)

@@ -26,7 +26,7 @@
                                 Actions
                             </button>
                     <div class="dropdown-menu" aria-labelledby="triggerId">
-                        <a class="dropdown-item" href="#">View</a>
+                        <a class="dropdown-item" href="{% url 'calibration:autoclave-calibration-detail' pk=cal.pk %}">View</a>
                         <a class="dropdown-item" href="#">Generate Certificate</a>
                         <a class="dropdown-item" href="#">Export PDF</a>
                     </div>
