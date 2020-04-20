@@ -51,6 +51,76 @@
             </div>
             <h3>Calibrations</h3>
 
+            <h4>Balances</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Due</th>
+                        <th>Name of Instrument</th>
+                        <th>Status</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bal in object.balance_set.all %}
+                        <tr>
+                            <td>{{bal.date}}</td>
+                            <td>{{bal.due}}</td>
+                            <td>{{bal.name_of_instrument}}</td>
+                            <td>{{bal.status}}</td>
+                            <td><a href="{% url 'calibration:balance-calibration-detail' pk=bal.pk %}" class="btn btn-primary"><i class="fa fa-ellipsis-h" aria-hidden="true"></i></a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <h4>Autoclaves</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Due</th>
+                        <th>Name of Instrument</th>
+                        <th>Status</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bal in object.autoclave_set.all %}
+                        <tr>
+                            <td>{{bal.date}}</td>
+                            <td>{{bal.due}}</td>
+                            <td>{{bal.name_of_instrument}}</td>
+                            <td>{{bal.status}}</td>
+                            <td><a href="{% url 'calibration:autoclave-calibration-detail' pk=bal.pk %}" class="btn btn-primary"><i class="fa fa-ellipsis-h" aria-hidden="true"></i></a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <h4>Other</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Due</th>
+                        <th>Name of Instrument</th>
+                        <th>Status</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bal in object.genericcalibration_set.all %}
+                        <tr>
+                            <td>{{bal.date}}</td>
+                            <td>{{bal.due}}</td>
+                            <td>{{bal.name_of_instrument}}</td>
+                            <td>{{bal.status}}</td>
+                            <td><a href="{% url 'calibration:calibration-detail' pk=bal.pk %}" class="btn btn-primary"><i class="fa fa-ellipsis-h" aria-hidden="true"></i></a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
         </div>
     </div>
 </div>

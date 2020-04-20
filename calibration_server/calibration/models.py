@@ -12,6 +12,9 @@ class Profile(models.Model):
         ('admin', 'Admin')
         ])
 
+    def __str__(self):
+        return self.user.username
+
 class Customer(models.Model):
     name = models.CharField(max_length=255)
     address = models.TextField(blank=True) 
@@ -24,19 +27,23 @@ class Customer(models.Model):
     @property
     def outstanding(self):
         total = 0
-        total += self.genericcalibration_set.filter(certificate_timestamp__isnull=True).count()
-        total+= self.autoclave_set.filter(certificate_timestamp__isnull=True).count()
-        total += self.balance_set.filter(certificate_timestamp__isnull=True).count()
+        total += self.genericcalibration_set.filter(certificate_number__isnull=True).count()
+        total+= self.autoclave_set.filter(certificate_number__isnull=True).count()
+        total += self.balance_set.filter(certificate_number__isnull=True).count()
         return total 
 
 
     @property
-    def completed(self):
+    def total(self):
         total = 0
-        total += self.genericcalibration_set.filter(certificate_timestamp__isnull=False).count()
-        total+= self.autoclave_set.filter(certificate_timestamp__isnull=False).count()
-        total += self.balance_set.filter(certificate_timestamp__isnull=False).count()
+        total += self.genericcalibration_set.all().count()
+        total+= self.autoclave_set.all().count()
+        total += self.balance_set.all().count()
         return total 
+
+    @property
+    def completed(self):
+        return self.total - self.outstanding
 
 
     @property
@@ -97,6 +104,10 @@ class Calibration(models.Model):
             
         return 'Certificate'
 
+    @property
+    def uncertainty(self):
+        raise NotImplementedError()
+
 class Standard(models.Model):
     name = models.CharField(max_length=255, unique=True)
     certificate = models.CharField(max_length=255)
@@ -127,11 +138,33 @@ class Autoclave(Calibration):
     def type_string(self):
         return 'autoclave'
 
+    @property
+    def uncertainty(self):
+        '''all uncertainty calculations are performed in this method
+        will calculate the uncertainty based on the recorded data
+        it is the sum of the square of the resolution and the sum of the 
+        squares of the individual measurement errors. In the case of an autoclave there are two'''
+        return None
+
+    @property
+    def uncertainty_pressure(self):
+        return math.sqrt(math.pow(self.resolution, 2) + \
+            sum(math.pow(i.correction,2) for i in self.autoclavepressurecalibrationline_set.all()))
+        
+
+    @property
+    def uncertainty_temp(self):
+        return math.sqrt(math.pow(self.resolution_temp, 2) + \
+            sum(math.pow(i.correction,2) for i in self.autoclavetemperaturecalibrationline_set.all()))
 
 class AutoclaveTemperatureCalibrationLine(models.Model):
     calibration = models.ForeignKey('calibration.Autoclave', on_delete=models.CASCADE)
     input_signal = models.FloatField(default=0.0)
     measured = models.FloatField(default=0.0)
+
+    @property 
+    def correction(self):
+        return abs(self.input_signal - self.measured)
 
 
 class AutoclavePressureCalibrationLine(models.Model):
@@ -139,6 +172,44 @@ class AutoclavePressureCalibrationLine(models.Model):
     applied_mass = models.FloatField(default=0.0)
     input_pressure = models.FloatField(default=0.0)
     measured = models.FloatField(default=0.0)
+
+    @property
+    def calculated_pressure(self):
+        '''Ensure input mass is grams'''
+
+        def calculate_pressure_psi(weight):
+            return (weight/45.19)+5.0150254481
+
+        def calculate_pressure_bar(weight):
+            return calculate_pressure_psi(weight) / 14.4038
+                
+        def calculate_pressure_kpa(weight):
+            return calculate_pressure_bar(weight) * 100
+            
+        def calculate_pressure_mpa(weight):
+            return calculate_pressure_bar(weight) / 10
+            
+        def calculate_pressure_pa(weight):
+            return calculate_pressure_bar(weight) / 100000
+
+
+        units = {
+            'bar': calculate_pressure_bar,
+            'kpa': calculate_pressure_kpa,
+            'mpa': calculate_pressure_mpa,
+            'pa': calculate_pressure_pa,
+            'psi': calculate_pressure_psi,
+        }
+        calculator  = units.get(self.calibration.units)
+        if not calculator:
+            return 0
+
+        return calculator(self.applied_mass)
+
+
+    @property
+    def correction(self):
+        return abs(self.measured - self.calculated_pressure)
 
 
 class GenericCalibration(Calibration):
@@ -148,10 +219,24 @@ class GenericCalibration(Calibration):
     def type_string(self):
         return self.type
 
+    @property 
+    def uncertainty(self):
+        '''all uncertainty calculations are performed in this method
+        will calculate the uncertainty based on the recorded data
+        it is the sum of the square of the resolution and the sum of the 
+        squares of the individual measurement errors. In the case of an autoclave there are two'''
+        return math.sqrt(math.pow(self.resolution, 2) + \
+            sum(math.pow(i.correction,2) for i in self.genericcalibrationline_set.all()))
+
+
 class GenericCalibrationLine(models.Model):
     calibration = models.ForeignKey('calibration.GenericCalibration', on_delete=models.CASCADE)
     input_signal = models.FloatField(default=0.0)
     measured = models.FloatField(default=0.0)
+
+    @property 
+    def correction(self):
+        return abs(self.input_signal - self.measured)
 
 
 class PressureCalibrationLine(models.Model):
@@ -160,6 +245,44 @@ class PressureCalibrationLine(models.Model):
     input_pressure = models.FloatField(default=0.0)
     measured = models.FloatField(default=0.0)
 
+    @property
+    def calculated_pressure(self):
+        '''Ensure input mass is grams'''
+
+        def calculate_pressure_psi(weight):
+            return (weight/45.19)+5.0150254481
+
+        def calculate_pressure_bar(weight):
+            return calculate_pressure_psi(weight) / 14.4038
+                
+        def calculate_pressure_kpa(weight):
+            return calculate_pressure_bar(weight) * 100
+            
+        def calculate_pressure_mpa(weight):
+            return calculate_pressure_bar(weight) / 10
+            
+        def calculate_pressure_pa(weight):
+            return calculate_pressure_bar(weight) / 100000
+
+
+        units = {
+            'bar': calculate_pressure_bar,
+            'kpa': calculate_pressure_kpa,
+            'mpa': calculate_pressure_mpa,
+            'pa': calculate_pressure_pa,
+            'psi': calculate_pressure_psi,
+        }
+        print(self.calibration.units)
+        calculator  = units.get(self.calibration.units)
+        if not calculator:
+            return 0
+
+        return calculator(self.applied_mass)
+
+
+    @property
+    def correction(self):
+        pass
 
 class Balance(Calibration):
     @property

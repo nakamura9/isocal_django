@@ -36,7 +36,8 @@
             {{form.as_p}}
             <button class="btn btn-primary btn-block">Login</button>
         </form>
-        No Account?<a href="">Register.</a>
+        <p>No Account? <a href="{% url 'calibration:create-profile' %}">Register.</a></p>
+        <p>Forgotten Password? <a href="{% url 'calibration:reset-profile' %}">Reset.</a></p>
     </div>
 </div>
 

@@ -1,30 +1,37 @@
 {% extends 'window.html' %}
 
 {% block content %}
+{% load static %}
 
 <div class="container">
     <div class="row">
         <div class="col-sm-4">
-            <div class="card dash-card">
+            <div class="card dash-card shadow" style='border-top-color:crimson;'>
+                <img class="card-img-top" src="{% static '/calibration/images/countdown.svg' %}" style='height:150px;' alt="">
+
                 <div class="card-body">
                     <h3>Outstanding Certificates</h3>
-                    <h1>5</h1>
+                    <h1>{{outstanding}}</h1>
                 </div>
             </div>
         </div>
         <div class="col-sm-4">
-            <div class="card dash-card">
+            <div class="card dash-card shadow" style='border-top-color:#ccc;'>
+                <img class="card-img-top" src="{% static '/calibration/images/scales.svg' %}" style='height:150px;'alt="">
+
                 <div class="card-body">
                     <h3># Standards</h3>
-                    <h1>5</h1>
+                    <h1>{{standards.count}}</h1>
                 </div>
             </div>
         </div>
         <div class="col-sm-4">
-            <div class="card dash-card">
+            <div class="card dash-card shadow">
+                <img class="card-img-top" src="{% static '/calibration/images/value.svg' %}" alt="" style='height:150px;'>
+
                 <div class="card-body">
                     <h3>Unique Customers</h3>
-                    <h1>5</h1>
+                    <h1>{{customers.count}}</h1>
                 </div>
             </div>
         </div>
@@ -33,9 +40,21 @@
     <div class="row">
         <div class="col-6">
             <h3>Calibrations By Type </h3>
+            <ul class="list-group">
+            {% for typ in types %}
+                <li class="list-group-item" style='display:flex;flex-direction:row;'><span style='flex:4;font-weight:700;font-size:1.25rem;'>{{typ.name}}</span>  <span style='text-align:right;flex:1'>{{typ.count}}</span></li>
+
+            {% endfor %}
+            </ul>
         </div>
         <div class="col-6">
             <h3>Calibrations By Customer</h3>
+            <ul class="list-group">
+            {% for cus in customers %}
+                <li class="list-group-item" style='display:flex;flex-direction:row;'><span style='flex:4;font-weight:700;font-size:1.25rem;'>{{cus}}</span>  <span style='text-align:right;flex:1'>{{cus.total}}</span></li>
+
+            {% endfor %}
+            </ul>
         </div>
     </div>
 </div>

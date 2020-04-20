@@ -40,16 +40,16 @@
 		{% for pres in object.autoclavepressurecalibrationline_set.all %}
 			<tr>
 				<td>{{pres.applied_mass}}</td>
-				<td>{{pres.input_pressure}}</td>
+				<td>{{pres.calculated_pressure}}</td>
 				<td>{{pres.measured}}</td>
-				<td>0.0</td>
+				<td>{{pres.correction}}</td>
 			</tr>
 		{% endfor %}
 		</tbody>
 		
 	</table>
 	<p><b>The uncertainty of the pressure measurement was estimated to be ± 
-	{{object.standard.uncertainty}} {{object.units}}.(95% confidence level)</b>
+	{{object.uncertainty_pressure}} {{object.units}}.(95% confidence level)</b>
 	</p>
 	
 <h3>Temperature</h3>
@@ -64,20 +64,18 @@
 			<tr>
 				<td>{{temp.input_signal}}</td>
 				<td>{{temp.measured}}</td>
-				<td>0.0</td>
+				<td>{{temp.correction}}</td>
 			</tr>
 		{% endfor %}
 	</table>
 	<p><b>The uncertainty of the measurements was estimated to be ± 
-	{{uncertainty_temperature}} ºC.(95% confidence level)</b>
+	{{object.uncertainty_temp}} ºC.(95% confidence level)</b>
 	
 {% endblock %}
 
 {% block traceability %}
-<p><b>For Pressure:</b>The standard pressure calibrator is traceable to Superb Instrumentation 
-		through calibration certificate numbers P/807/02 AND 0795105</p>
+<p><b>For Pressure:</b>{{object.standard.traceability}}</p>
 		
-<p><b>For Temperature:</b>The reference thermometer used is traceable to REPCAL 
-		through calibration certificate number 146-03041216.</p>
+<p><b>For Temperature:</b>{{object.temp_standard.traceability}}</p>
 		
 {% endblock %}

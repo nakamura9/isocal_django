@@ -1,3 +1,20 @@
+{% load static %}
 <footer style='margin-top:1rem;padding:15px;' class='primary text-white'>
-    <p style='text-align:center;'>(c) ISOCal 2019</p>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 col-sm-12">
+                <img src=" {% static 'calibration/images/iso.png' %} "  style='height:50px;width:auto;' alt="">
+
+                <p ><i class="fa fa-copyright" aria-hidden="true"></i> ISOCal 2020</p>
+                <p><a style='color:white;' href="/login"><i class="fas fa-user    "></i> Sign Out</a></p>    
+                <p><a style='color:white;' href="{% url 'calibration:change-password' %}"><i class="fas fa-lock    "></i> Change Password</a></p>    
+            </div>
+                
+            <div class="col-md-3 col-sm-12"><p >All vector icons courtesy of FlatIcon.com</p></div>
+            <div class="col-md-3 col-sm-12"><p >
+                Developed by <a href="https://gonc.co.zw">GOnC</a> Development services.
+                <img src=" {% static 'calibration/images/logo2.PNG' %} "  style='height:50px;width:auto;' alt="">
+            </p></div>
+        </div>
+    </div>
 </footer>

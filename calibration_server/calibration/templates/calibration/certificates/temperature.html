@@ -17,15 +17,31 @@
 {% endblock %}
 {% block results %}
 	
-		{{fields}}
+		<table>
+			<tbody>
+				<tr>
+					<td>Input</td>
+					<td>Indicated</td>
+					<td>Correction</td>
+				</tr>
+				{% for mea in object.genericcalibrationline_set.all %}
+					<tr>
+						<td>{{mea.input_signal}}</td>
+						<td>{{mea.measured}}</td>
+						<td>{{mea.correction}}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
 	<br />
 	<p><b>The uncertainty of the measurements was estimated to be ± 
-	{{uncertainty}} {{units}}.(95% confidence level)</b>
+	{{object.uncertainty}} {{object.units}}.(95% confidence level)</b>
 	</p>
 	
 {% endblock %}
 
 {% block traceability %}
-<p>The reference thermometer used is traceable to REPCAL 
-through calibration certificate number 146-03041216.</p>
+{{object.standard.traceability}}
+{% comment %} <p>The reference thermometer used is traceable to REPCAL 
+through calibration certificate number 146-03041216.</p> {% endcomment %}
 {% endblock %}

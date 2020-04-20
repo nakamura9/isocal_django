@@ -29,8 +29,8 @@
                             </button>
                     <div class="dropdown-menu" aria-labelledby="triggerId">
                         <a class="dropdown-item" href="{% url 'calibration:calibration-detail' pk=cal.pk %}">View</a>
-                        <a class="dropdown-item" href="#">Generate Certificate</a>
-                        <a class="dropdown-item" href="#">Export PDF</a>
+                        <a class="dropdown-item" href="{% url 'calibration:generate-certificate' pk=cal.pk type='generic' %}">Generate Certificate</a>
+                        
                     </div>
                 </div>
             </td>

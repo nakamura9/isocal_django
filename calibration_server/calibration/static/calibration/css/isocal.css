@@ -32,7 +32,7 @@
     background-color: #EEE;
 }
 
-.page {
+.preview-page {
     margin: 30px auto;
     padding: 0.5in;
     width: 21cm;
@@ -41,6 +41,13 @@
     box-shadow: 5px 5px 20px #ccc;
     background-color: white;
     overflow-y: auto;
+}
+
+.page {
+    height: fit-content;
+    background-color: white;
+    overflow-y: auto;
+    margin: 0px;
 }
 
 body {
@@ -78,14 +85,13 @@ table.header-table,
 }
 
 .signature-box {
-    margin: 6cm auto;
+    margin: 4cm auto;
     width: fit-content;
-    border: 1px solid black;
 
 
 }
 
 .col>div {
-    border: 0.5px solid black;
+    border: 0.125px solid black;
     padding: 0.25rem;
 }

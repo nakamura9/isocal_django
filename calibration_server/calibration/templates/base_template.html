@@ -31,23 +31,21 @@
 	<link rel="stylesheet" href="{% static 'calibration/css/isocal.css' %}">
 </head>
 
-<body>
-	<div class="page">
-		<center>
-			<p>{{certificate_number}}</p>
-		</center>
-		<div>
-			<div style="float: left;">
+<body {% if not preview %}style='background-color:white'{% endif %} >
+	<div class=" {% if preview %}preview-{% endif %}page">
+			<p style='text-align:center;'>{{object.certificate_number}}</p>
+		<div style='display:flex;flex-direction:row;page-break-after:avoid;'>
+			<div >
 				<img width="187" height="100" src="{% static 'calibration/images/sad.jpg' %}">
 			</div>
-			<div style="float: left;">
+			<div >
 				<center><img src="{% static 'calibration/images/iso.png' %}">
 					<p>E-mail: Consolte@mweb.co.zw, 17038 Boshoff Road, Graniteside, Harare, Zimbabwe</p>
 					<p><b>A SADCAS Accredited Calibration Laboratory</b></p>
 				</center>
 			</div>
 		</div>
-		<div style="float: left;clear: both;">
+		<div style="page-break-before:avoid;">
 
 			<h2 style="color: red;
 					text-align: center;"> CALIBRATION CERTIFICATE</h2>
@@ -150,9 +148,10 @@
 				</div>
 			</div>
 
-			<div class="page-end"></div>
+	</div>
 			
-			
+
+	<div class="{% if preview %}preview-{% endif %}page">
 			<h3><b>1 Standards used:</b></h3>
 			{% block standards %}
 			{% endblock %}
@@ -187,7 +186,9 @@
 
 			<p>{{object.comments}}</p>
 		</div>
-	</div>
+	</div>			
+			
+
 </body>
 
 </html>

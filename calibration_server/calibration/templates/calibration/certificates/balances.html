@@ -220,8 +220,8 @@
 	<br />
 	<p>5) Linearity(after calibration adjustments):</p>
 	
-	<div style='display:flex;flex-direction:row;border:1px solid black;padding:0px;'>
-		<div style='display:flex;flex-direction:column;border:1px solid black;flex:2;margin:0px' class='col'>
+	<div style='display:flex;flex-direction:row;border:0.25px solid black;padding:0px;'>
+		<div style='display:flex;flex-direction:column;flex:2;margin:0px' class='col'>
 			<div>Nominal Value</div>
 			<div>Actual Value</div>
 			<div>Linearity Up</div>
@@ -232,7 +232,7 @@
 			<div>Standard Deviation</div>
 		</div>
 		{% for mea in object.up_down_linearity %}
-			<div class='col' style='display:flex;flex-direction:column;border:1px solid black;flex:1;'>
+			<div class='col' style='display:flex;flex-direction:column;flex:1;'>
 				<div>{{mea.nom}}</div>
 				<div>{{mea.actual}}</div>
 				<div>{{mea.up}}</div>
