@@ -298,7 +298,6 @@ class GenericPDFView(WeasyTemplateResponseMixin, GenericDetailView):
 
 @csrf_exempt
 def upload_standards(request):
-    print(request.body)
     data = json.loads(request.body)
     for std in data['standards']:
         if models.Standard.objects.filter(name=std['name']).exists():
@@ -321,7 +320,6 @@ def upload_standards(request):
 
 @csrf_exempt
 def upload_calibrations(request):
-    print(request.body)
     data = json.loads(request.body)
     for cal in data['calibrations']:
         date, start_time = cal['date'].split('T')
@@ -390,13 +388,14 @@ def upload_calibrations(request):
 
             
             half = cal.get('repeatability', [])[:5]
-            full = cal.get('repeatability', [])[6:10]
+            full = cal.get('repeatability', [])[5:10]
+            
             if len(half) == len(full):
                 for i, j in zip(half, full):
                     models.BalanceRepeatability.objects.create(
                         calibration=bal,
-                        half_load=i,
-                        full_load=j
+                        half_load=i[0],
+                        full_load=j[0]
                     )
             for oc in cal['off_center_data']:
                 models.BalanceOffCenter.objects.create(
