@@ -393,7 +393,7 @@ def upload_calibrations(request):
             full = cal.get('repeatability', [])[6:10]
             if len(half) == len(full):
                 for i, j in zip(half, full):
-                    models.Repeatability.objects.create(
+                    models.BalanceRepeatability.objects.create(
                         calibration=bal,
                         half_load=i,
                         full_load=j
