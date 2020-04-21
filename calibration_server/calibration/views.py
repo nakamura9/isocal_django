@@ -388,13 +388,16 @@ def upload_calibrations(request):
                     indicated=indicated
                 )
 
-            for rep in cal.get('repeatability', []):
-                half, full = rep
-                models.Repeatability.objects.create(
-                    calibration=bal,
-                    half_load=half,
-                    full_load=full
-                )
+            
+            half = cal.get('repeatability', [])[:5]
+            full = cal.get('repeatability', [])[6:10]
+            if len(half) == len(full):
+                for i, j in zip(half, full):
+                    models.Repeatability.objects.create(
+                        calibration=bal,
+                        half_load=i,
+                        full_load=j
+                    )
             for oc in cal['off_center_data']:
                 models.BalanceOffCenter.objects.create(
                     calibration=bal,
