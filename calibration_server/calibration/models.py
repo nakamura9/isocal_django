@@ -98,7 +98,7 @@ class Calibration(models.Model):
     @property
     def status(self):
         if not self.certificate_timestamp:
-            if self.due > datetime.date.today():
+            if not self.due or self.due > datetime.date.today():
                 return 'Pending Datasheet'
             return 'Overdue Datasheet'
             
